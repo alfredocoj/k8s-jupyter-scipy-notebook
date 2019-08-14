@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-notebook
+  namespace: statistic
+  labels:
+    app: jupyter-notebook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter-notebook
+  template:
+    metadata:
+      labels:
+        app: jupyter-notebook
+    spec:
+      containers:
+        - name: minimal-notebook
+          #image: jupyter/minimal-notebook:latest
+          image: 192.168.6.184:5000/ithappens/jupyter-scipy-notebook:latest
+          ports:
+            - containerPort: 8888
+          command: ["start-notebook.sh"]
+          args: ["--NotebookApp.token=''"]
+          resources:
+            limits:
+              cpu: 90000m
+              memory: 25600Mi
+            requests:
+              cpu: 1000m
+              memory: 4096Mi
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: jupyter-work
+              mountPath: "/home/jovyan/work"
+      volumes:
+        - name: jupyter-work
+          hostPath:
+            path: /opt/jupyter/work
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node-17
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jupyter-notebook
+  namespace: statistic
+spec:
+  type: NodePort
+  selector:
+    app: jupyter-notebook
+  ports:
+    - protocol: TCP
+      nodePort: 30040
+      port: 8888
+      targetPort: 8888
