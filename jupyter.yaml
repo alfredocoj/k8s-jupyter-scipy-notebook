@@ -33,11 +33,11 @@ spec:
           imagePullPolicy: Always
           volumeMounts:
             - name: jupyter-work
-              mountPath: "/home/jovyan/work"
+              mountPath: "/home/jovyan"
       volumes:
         - name: jupyter-work
           hostPath:
-            path: /opt/jupyter/work
+            path: /opt/jupyter
       nodeSelector:
         kubernetes.io/hostname: k8s-node-17
 
