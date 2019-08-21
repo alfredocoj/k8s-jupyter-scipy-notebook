@@ -23,6 +23,23 @@ RUN apt-get update && \
     gcc htop nano mcedit && \
     rm -rf /var/lib/apt/lists/*
 
+## Infra estrutura do time de estatistica
+
+RUN apt-get update && \
+	apt-get -y install gcc unixodbc unixodbc-dev apt-transport-https ca-certificates curl gnupg2 g++ odbc-postgresql libpq-dev && \
+	curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+	curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+	apt-get update && \
+	ACCEPT_EULA=Y apt-get -y install msodbcsql17 && \
+	apt-get autoremove && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* && \
+	rm /etc/apt/sources.list.d/mssql-release.list
+
+COPY infraestrutura /home/jovyan/app
+RUN chmod +x /home/jovyan/app/*.sh
+RUN /home/jovyan/app/install.sh
+
 # Julia dependencies
 # install Julia packages in /opt/julia instead of $HOME
 ENV JULIA_DEPOT_PATH=/opt/julia
