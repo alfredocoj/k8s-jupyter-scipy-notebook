@@ -1,0 +1,15 @@
+.gitignore
+infraestrutura/.git
+infraestrutura/.gitignore
+infraestrutura/Dockerfile
+
+.env
+.git*
+.editorconfig
+.cache
+LICENSE
+README.md
+scpServer.sh
+Makefile
+*.yaml
+Dockerfile
